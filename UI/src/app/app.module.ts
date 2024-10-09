@@ -11,8 +11,8 @@ import { routes } from './app.routes';
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
     auth: {
-      clientId: '6e0e18c1-30d1-451d-bcf0-3dfebc97dac3',  // Your Azure AD client ID
-      authority: 'https://login.microsoftonline.com/f49ab434-34c0-497d-9e86-1efcbec5b5c6',  // Your tenant ID
+      clientId: '97e55959-e1e2-4284-8a7f-6f2e067df752',  // Your Azure AD client ID
+      authority: 'https://login.microsoftonline.com/adc106b6-0473-460c-ba64-d365b98c3818',  // Your tenant ID
       redirectUri: 'http://localhost:4200',  // Your redirect URI
     },
     cache: {
@@ -25,9 +25,10 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 // MSAL Guard Configuration Factory (for login guard configuration)
 export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   return {
-    interactionType: InteractionType.Popup,  // Set to Popup or Redirect
+    interactionType: InteractionType.Redirect,  // Set to Popup or Redirect
     authRequest: {
-      scopes: ['user.read']  // Scopes required during authentication
+      scopes: ['user.read','https://management.azure.com/.default', 'https://management.core.windows.net/','https://management.core.windows.net','https://management.azure.com/','https://management.azure.com'],
+      
     }
   };
 }
@@ -35,10 +36,10 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
 // MSAL Interceptor Configuration Factory (to protect API requests)
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
-  protectedResourceMap.set('https://graph.microsoft.com/v1.0/me', ['user.read']);  // Example protected API
+  protectedResourceMap.set('https://management.azure.com/', ['https://management.azure.com/.default']);  // Correct audience and scope
 
   return {
-    interactionType: InteractionType.Popup,  // or InteractionType.Redirect
+    interactionType: InteractionType.Redirect,  // or InteractionType.Redirect
     protectedResourceMap
   };
 }

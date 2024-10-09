@@ -3,8 +3,10 @@ import { MSAL_INSTANCE, MsalBroadcastService } from '@azure/msal-angular';
 import { AuthenticationResult, EventMessage, EventType, InteractionStatus, PublicClientApplication } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { AuthService } from '../authentication/auth.service';
+
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { SubscriptionService } from './services/subscription.service';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -18,12 +20,14 @@ export class AppComponent implements OnInit, OnDestroy {
   tokenExpiration: string = '';
   accessToken = '';
   isInteractionInProgress: boolean | undefined;
-
+  idToken = ''
   constructor(
     private authService: AuthService,
     private msalBroadcastService: MsalBroadcastService,
     private http: HttpClient,
+    private subscriptionService:SubscriptionService,
     @Inject(MSAL_INSTANCE) private msalInstance: PublicClientApplication
+
   ) {}
 
   clearMsalCache() {
@@ -86,7 +90,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 console.log('Login successful #component', response);
                 const IdToken = response.idToken;
                 this.accessToken = response.accessToken;
-                
+                this.idToken = response.idToken
                 this.authService.sendData(IdToken).subscribe(res => {
                   console.log(res);
                   this.loginDisplay = true;
@@ -124,20 +128,21 @@ export class AppComponent implements OnInit, OnDestroy {
 
   async callApi() {
     console.log("getting usage report");
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.accessToken}`,
-      'Content-Type': 'application/json'
-    });
+    this.subscriptionService.getUsageDetails('52435666-b2cb-431f-8490-6f1524da777e', '2024-08-01','2024-09-30')
+    // const headers = new HttpHeaders({
+    //   'Authorization': `Bearer ${this.idToken}`,
+    //   'Content-Type': 'application/json'
+    // });
 
-    const apiUrl = 'https://management.azure.com/subscriptions/550bbbbc-52fb-4bb7-972e-e8a0540fa38c/providers/Microsoft.Consumption/usageDetails?api-version=2024-08-01&%24filter=properties%2FusageStart%20ge%20%272024-08-01T00%3A00%3A00Z%27%20and%20properties%2FusageEnd%20le%20%272024-08-31T23%3A59%3A59Z%27'; 
+    // const apiUrl = 'https://management.azure.com/subscriptions/52435666-b2cb-431f-8490-6f1524da777e/providers/Microsoft.Consumption/usageDetails?api-version=2024-08-01&%24filter=properties%2FusageStart%20ge%20%272024-08-01T00%3A00%3A00Z%27%20and%20properties%2FusageEnd%20le%20%272024-08-31T23%3A59%3A59Z%27'; 
 
-    try {
-      this.http.get(apiUrl, { headers }).subscribe((response:any)=>{
-        console.log(response)
-      });
-    } catch (error) {
-      console.error('API call error:', error);
-    }
+    // try {
+    //   this.http.get(apiUrl, { headers }).subscribe((response:any)=>{
+    //     console.log(response)
+    //   });
+    // } catch (error) {
+    //   console.error('API call error:', error);
+    // }
   }
 
 }
