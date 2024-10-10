@@ -29,7 +29,9 @@ export class LoginComponent {
       private subscriptionService:SubscriptionService,
       @Inject(MSAL_INSTANCE) private msalInstance: PublicClientApplication
   
-    ) {}
+    ) {
+      // this.login()
+    }
   
     clearMsalCache() {
       this.msalInstance.clearCache();  
@@ -50,7 +52,7 @@ export class LoginComponent {
       //     console.log("Is interaction in progress:", this.isInteractionInProgress);
         // });
 
-        this.login();
+        // this.login();
 
   
        

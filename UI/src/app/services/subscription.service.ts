@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { MsalService } from '@azure/msal-angular';
 import { catchError } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { BehaviorSubject, of } from 'rxjs';
 export class SubscriptionService {
   private apiUrl = 'https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.Consumption/usageDetails';
 
-  constructor(private http: HttpClient, private authService: MsalService) {}
+  constructor(private http: HttpClient, private msal_service: MsalService, private authService:AuthService) {}
 
   private usageDetailsSubject = new BehaviorSubject<any>(null);
   usageDetails$ = this.usageDetailsSubject.asObservable();
@@ -19,9 +20,10 @@ export class SubscriptionService {
   getUsageDetails(subscriptionId: string, usageStart: string, usageEnd: string) {
     console.log("Inside GetUsageDetails func",subscriptionId );
     // Acquire token silently with the correct scope
-    const account = this.authService.instance.getActiveAccount();
+    const account = this.authService.account;
+    console.log("account = ", account)
     if (account) {
-      this.authService.acquireTokenSilent({
+      this.msal_service.acquireTokenSilent({
         scopes: ['https://management.azure.com/.default'],
         account
       }).subscribe((response:any) => {
@@ -45,6 +47,9 @@ export class SubscriptionService {
           console.log('Usage details:', data);
         });
       })
+    }
+    else{
+      this.authService.login()
     }
   }
 }

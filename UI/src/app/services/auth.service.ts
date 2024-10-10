@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AuthenticationResult, IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser';
+import { AccountInfo, AuthenticationResult, IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser';
 import { MsalService } from '@azure/msal-angular';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,31 +16,18 @@ export class AuthService {
   idToken = '';
   loggedInUser = '';
   loginType = 'msal';
-  config: any;
-
+  loggedIn = false
+  account!: AccountInfo | null;
   constructor(
     private msalService: MsalService,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private config:ConfigService
   ) {
     // Load configuration from config.json
-     this.loadConfig().then(() => {
-      const msalConfig = {
-        auth: {
-          clientId: this.config.auth.clientId,
-          authority: `https://login.microsoftonline.com/${this.config.auth.tenantId}`,
-          redirectUri: window.location.origin + this.config.auth.redirectUri,
-        },
-        cache: {
-          cacheLocation: 'localStorage',
-          storeAuthStateInCookie: false,
-        },
-      };
 
-      // Initialize MSAL instance
-      const msalInstance = new PublicClientApplication(msalConfig);
-      this.msalService.instance = msalInstance;
-
+    this.accessToken = localStorage.getItem(this.accessToken) as string
+      
       // Handle Redirect Observable for login
       this.msalService.handleRedirectObservable().subscribe({
         next: (result: AuthenticationResult | null) => {
@@ -50,40 +38,42 @@ export class AuthService {
             this.idToken = result.idToken;
             this.accessToken = result.accessToken;
             this.loggedInUser = result.account.username;
+            this.account = result.account
             console.log(this.accessToken)
+            msalService.instance.setActiveAccount(this.account)
 
             localStorage.setItem('idToken', this.idToken);  // Storing idToken in localStorage
             localStorage.setItem('accessToken', this.accessToken);  // Storing accessToken in localStorage
             localStorage.setItem('loginType', this.loginType);  // Storing login type in localStorage
             localStorage.setItem('loggedInUser', this.loggedInUser);  // Storing loggedInUser in localStorage
-
+            this.loggedIn = true
             // Navigate to dashboard
-            this.router.navigateByUrl('/dashboard');
+            // this.router.navigateByUrl('/dashboard');
           }
         },
         error: (error) => console.log(error)
       });
-    }).catch((error) => console.error('Error loading config:', error));
+    
   }
 
   // Function to load the configuration from config.json
-  private async loadConfig(): Promise<void> {
-    this.config = await lastValueFrom(this.http.get('/assets/config.json'));
-    console.log('Loaded config:', this.config); 
-  }
+  
 
-  async login(): Promise<void> {  // No need for Observable or returning
+  async login() {  // No need for Observable or returning
          // Set the flag when starting the login process
         try {
-          await this.msalService.instance.initialize();
+          console.log("calling login")
+          console.log()
+          if(this.msalService.instance.getActiveAccount() == null){
     
           // Instead of loginPopup(), use loginRedirect() for redirect login flow
           this.msalService.loginRedirect();  // This will handle the redirect to the Microsoft login page
             // Reset the flag after initiating the redirect
+            }
         } catch (error) {
           console.error("MSAL initialization failed: ", error);
           
-          throw error;  // No need for `throwError`, just rethrow the error
+          // throw error;  // No need for `throwError`, just rethrow the error
         }
       }
 
