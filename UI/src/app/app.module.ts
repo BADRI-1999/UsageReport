@@ -5,7 +5,8 @@ import { MsalModule, MsalService, MsalInterceptor, MSAL_INSTANCE, MSAL_GUARD_CON
 import { IPublicClientApplication, PublicClientApplication, InteractionType } from '@azure/msal-browser';
 import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router'; 
-import { routes } from './app.routes';
+import { AppRoutingModule, routes } from './app.routes';
+import { LoginComponent } from './components/login/login.component';
 
 // MSAL Instance Factory to create PublicClientApplication
 export function MSALInstanceFactory(): IPublicClientApplication {
@@ -44,18 +45,23 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   };
 }
 
+
 @NgModule({
   declarations: [
-    AppComponent
+   
+    AppComponent,
   ],
   imports: [
+    
+    AppRoutingModule,
     BrowserModule,
     RouterModule.forRoot(routes),  
     MsalModule.forRoot(
       MSALInstanceFactory(),  // Call the MSALInstanceFactory function to return an object
       MSALGuardConfigFactory(),  // Call the GuardConfig factory
       MSALInterceptorConfigFactory()  // Call the InterceptorConfig factory
-    )
+    ),
+    LoginComponent
   ],
   providers: [
     provideHttpClient(),
