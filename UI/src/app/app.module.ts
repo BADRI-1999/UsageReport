@@ -61,7 +61,6 @@ export function initializeApp(configService: ConfigService, handler: HttpBackend
     AppRoutingModule,
     BrowserModule,
     RouterModule.forRoot(routes),  
-    
     LoginComponent
   ],
   providers: [

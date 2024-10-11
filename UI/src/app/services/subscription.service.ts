@@ -4,17 +4,22 @@ import { MsalService } from '@azure/msal-angular';
 import { catchError } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
 import { AuthService } from './auth.service';
-
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
 export class SubscriptionService {
   private apiUrl = 'https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.Consumption/usageDetails';
 
-  constructor(private http: HttpClient, private msal_service: MsalService, private authService:AuthService) {}
+  
 
-  private usageDetailsSubject = new BehaviorSubject<any>(null);
+  constructor(private http: HttpClient, private msal_service: MsalService, private authService:AuthService,
+    private router: Router,
+  ) {}
+
+  private usageDetailsSubject = new BehaviorSubject<any>(null); 
   usageDetails$ = this.usageDetailsSubject.asObservable();
+
 
   // Updated method to include usageStart and usageEnd in $filter
   getUsageDetails(subscriptionId: string, usageStart: string, usageEnd: string) {
@@ -45,6 +50,7 @@ export class SubscriptionService {
         ).subscribe(data => {
           this.usageDetailsSubject.next(data);
           console.log('Usage details:', data);
+          this.router.navigate(['/dashboard']);
         });
       })
     }
@@ -52,4 +58,5 @@ export class SubscriptionService {
       this.authService.login()
     }
   }
+
 }

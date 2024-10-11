@@ -24,6 +24,7 @@ export class AuthService {
     private router: Router,
     private config:ConfigService
   ) {
+    this.instance = this.msalService.instance;
     // Load configuration from config.json
 
     this.accessToken = localStorage.getItem(this.accessToken) as string
@@ -48,7 +49,7 @@ export class AuthService {
             localStorage.setItem('loggedInUser', this.loggedInUser);  // Storing loggedInUser in localStorage
             this.loggedIn = true
             // Navigate to dashboard
-            // this.router.navigateByUrl('/dashboard');
+            this.router.navigateByUrl('/dashboard');
           }
         },
         error: (error) => console.log(error)
@@ -62,13 +63,14 @@ export class AuthService {
   async login() {  // No need for Observable or returning
          // Set the flag when starting the login process
         try {
+            await this.instance?.initialize()
+      
+
+          
           console.log("calling login")
           console.log()
           if(this.msalService.instance.getActiveAccount() == null){
-    
-          // Instead of loginPopup(), use loginRedirect() for redirect login flow
-          this.msalService.loginRedirect();  // This will handle the redirect to the Microsoft login page
-            // Reset the flag after initiating the redirect
+          this.msalService.loginRedirect();  
             }
         } catch (error) {
           console.error("MSAL initialization failed: ", error);
