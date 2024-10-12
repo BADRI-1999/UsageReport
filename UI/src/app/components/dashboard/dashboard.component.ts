@@ -76,8 +76,9 @@ export class DashboardComponent {
     this.subscriptionService.usageDetails$.subscribe(data => {
       this.usageDetails = data;
       console.log('Received usage details in DashboardComponent:', this.usageDetails);
+      this.renderTemplate();
     });
-    this.renderTemplate();
+    
   }
 }
 
