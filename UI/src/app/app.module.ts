@@ -8,6 +8,20 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppRoutingModule, routes } from './app.routes';
 import { LoginComponent } from './components/login/login.component';
 import { ConfigService } from './services/config.service';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDialogModule } from '@angular/material/dialog'; 
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms'; 
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { DownloadComponent } from './components/download/download.component';
+
 
 // MSAL Instance Factory to create PublicClientApplication
 export function MSALInstanceFactory(config:ConfigService): IPublicClientApplication {
@@ -55,13 +69,30 @@ export function initializeApp(configService: ConfigService, handler: HttpBackend
   declarations: [
    
     AppComponent,
+    DashboardComponent,
+    
+   
+
+   
   ],
   imports: [
-    
+    ReactiveFormsModule,
     AppRoutingModule,
     BrowserModule,
     RouterModule.forRoot(routes),  
-    LoginComponent
+    LoginComponent,
+    BrowserAnimationsModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    MatDialogModule,
+    MatButtonModule,
+    FormsModule,
+    MatSlideToggleModule,
+    DownloadComponent,
+
+    
   ],
   providers: [
     {
@@ -92,6 +123,7 @@ export function initializeApp(configService: ConfigService, handler: HttpBackend
     MsalService,
     MsalGuard,
     MsalBroadcastService,
+    provideAnimationsAsync(),
     
     
   ],

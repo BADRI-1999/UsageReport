@@ -60,26 +60,14 @@ export class LoginComponent {
     
   
     
-  
-    async onLogout() {
-      try {
-        await this.authService.logout(); // Ensure you await the logout 
-        console.log("Logged out successfully.");
-      } catch (error) {
-        console.error("Logout error: ", error);
-      }
-    }
+
   
   
-    async callApi() {
-      console.log("getting usage report");
-      this.subscriptionService.getUsageDetails('52435666-b2cb-431f-8490-6f1524da777e', '2024-08-01','2024-09-30')
+    // async callApi() {
+    //   console.log("getting usage report");
+    //   this.subscriptionService.getUsageDetails('52435666-b2cb-431f-8490-6f1524da777e', '2024-10-12T22:00:00','2024-10-12T23:00:00')
 
-
-      // this.router.navigate(['/dashboard']);
-      
-
-    }
+    // }
     // sync(){
     // //   this.subscriptionService.usageDetails$.subscribe((res) => {
     // //     this.data = res;
