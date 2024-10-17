@@ -10,10 +10,10 @@ import {  PopupsComponent} from '../popups/popups.component'
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  templateUrl: './usagedetails.component.html',
+  styleUrls: ['./usagedetails.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class UsageDetailsComponent implements OnInit {
   usageDetails: any; // Store the usage details
   display: boolean = false;
   showModal: boolean = false;
@@ -42,7 +42,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     console.log("Getting usage report");
-    this.openModal()
+    this.callApi()
   }
 
   openShareDialog(): void {
