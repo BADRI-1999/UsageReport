@@ -8,7 +8,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppRoutingModule, routes } from './app.routes';
 import { LoginComponent } from './components/login/login.component';
 import { ConfigService } from './services/config.service';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { UsageDetailsComponent } from './components/usageDetails/usagedetails.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
@@ -73,7 +73,7 @@ export function initializeApp(configService: ConfigService, handler: HttpBackend
   declarations: [
    
     AppComponent,
-    DashboardComponent,
+    UsageDetailsComponent,
    
     
    
