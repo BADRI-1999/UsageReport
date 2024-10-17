@@ -1,0 +1,159 @@
+
+
+.navbar {
+    position: sticky;
+    top: 0;
+   
+    background-color: #4e76c2;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    color: white;
+  } 
+  
+  /* Logo */
+  .navbar-logo {
+    height: 100px;
+    align-items: center;
+    
+  }
+
+  .logo_img{
+    height: 30px;
+  }
+  
+  /* Left section */
+.navbar-left{
+height: 45px;
+padding-right: 25px;
+}
+  
+  .menu-btn {
+    font-size: 26px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-right: 15px;
+  }
+  
+img{
+  height: 20px;
+
+}
+  
+  .cloud-btn {
+    background: none;
+    padding: 5px 25px;
+    margin-right: 10px;
+    cursor: pointer;
+ 
+  }
+  
+  .cloud-btn:hover {
+    background-color: white;
+    color: #333;
+  }
+  
+  /* Profile Dropdown */
+  .profile-dropdown {
+    position: relative; /* Necessary for dropdown positioning */
+    display: inline-block;
+    height: 100%;
+    padding-top: 5px;
+   
+  }
+  
+  .profile-btn {
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    padding: 15px 20px 10px 20px;
+    
+    background-color: #333; /* Background color */
+    color: white; /* Text color */
+    border: none; /* Remove default border */
+    cursor: pointer; /* Pointer cursor on hover */
+    
+  }
+  
+  .dropdown-content {
+    display: none; /* Hidden by default */
+    position: absolute; /* Position relative to the dropdown */
+    background-color: #f9f9f9; /* Background for dropdown */
+    min-width: 160px; /* Minimum width of dropdown */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Shadow for dropdown */
+    z-index: 1; /* Make sure it appears above other elements */
+  }
+  
+  .profile-dropdown:hover .dropdown-content {
+    display: block; /* Show on hover */
+  }
+  
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown-content a:hover {
+    background-color: #ddd;
+  }
+  
+  /* Sidebar styles */
+  .sidebar {
+    width: 0;
+    position:absolute;
+    z-index: 1000;
+
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.3s;
+    padding-bottom: 20px;
+
+  }
+  
+  .sidebar.open {
+    width: 200px;
+  }
+  
+  .sidebar ul {
+    padding: 0;
+    list-style: none;
+  }
+  
+  .sidebar ul li {
+    padding: 8px 16px;
+  }
+  
+  .sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .sidebar ul li a:hover {
+    background-color: #575757;
+  }
+  
+
+.nav-element{
+    height: 20px;
+}
+
+
+
+.left-nav-toggle {
+  font-size: 40px; /* Adjust size as needed */
+  background: none; /* Remove background */
+  border: none; /* Remove border */
+  cursor: pointer; /* Pointer cursor on hover */
+  color: white; /* Change color to fit your theme */
+  padding-bottom: 25px;
+
+
+}

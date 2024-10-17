@@ -1,4 +1,5 @@
 <p>login works!</p>
 
-<button (click)="callApi()">get Usage Details</button>
-<button (click)="onLogout()">Log Out</button>
+<div *ngIf="isLoading" class="loading-spinner">
+    <span>Loading...</span> 
+  </div>

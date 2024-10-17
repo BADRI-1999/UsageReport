@@ -1,5 +1,71 @@
-<p>Dashboard works!</p>
-<button (click)="callApi()">Get Usage Report</button>
 
-<!-- Div where Handlebars will insert the generated content -->
-<div id="display"></div>
+<div id="report">
+
+    
+    <button id="sync-button" (click)="openModal()">
+        SYNC <img src="assets/cloud-sync.png" alt="Sync Icon">
+    </button>
+
+    <div *ngIf="isLoading" class="loading-spinner">
+      <span>Loading...</span> 
+    </div>
+
+    <!-- Div where Handlebars will insert the generated content -->
+    <div id="display">
+    </div>
+
+
+    <div class="modal" *ngIf="showModal">
+        <p>inside showModal</p>
+        <div class="modal-content">
+            <span class="close" (click)="closeModal()">&times;</span>
+            <h2>Select Time Interval</h2>
+
+            <mat-slide-toggle [(ngModel)]="isDateRangeSelected" (change)="onToggleChange($event)">
+                Select Date Range
+              </mat-slide-toggle>
+        
+              <div *ngIf="isDateRangeSelected">
+            <mat-form-field>
+                <mat-label>Enter a date range</mat-label>
+                <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                  <input matStartDate formControlName="start" placeholder="Start date">
+                  <input matEndDate formControlName="end" placeholder="End date">
+                </mat-date-range-input>
+               
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+              
+            
+              </mat-form-field>
+              
+              <p>Selected range: {{range.value | json}}</p>
+              </div>
+
+            <div *ngIf="!isDateRangeSelected">
+            <button (click)="selectOption(1)">Last 1 Hour</button>
+            <button (click)="selectOption(2)">Last 2 Hours</button>
+            <button (click)="selectOption(3)">Last 3 Hours</button>
+            </div>
+
+            <button (click) = "callApi()">Submit </button>
+          
+            
+     
+        </div>
+
+
+        
+    </div>
+
+    <div class="share">
+
+    </div>
+    <!-- <button (click)="getdownload()" *ngIf="display">Download</button> -->
+    <button mat-raised-button color="primary" (click)="openShareDialog()" *ngIf="display" >Share</button>
+    
+</div>
+
+
+
+
