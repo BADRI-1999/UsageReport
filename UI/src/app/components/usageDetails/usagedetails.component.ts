@@ -47,7 +47,9 @@ export class UsageDetailsComponent implements OnInit {
 
   openShareDialog(): void {
     const dialogRef = this.dialog.open(PopupsComponent, {
-      width: '500px'
+      width: '500px',
+      data: { usageDetails: this.usageDetails } // Pass the usage details here
+
     });
 
     dialogRef.afterClosed().subscribe(result => {
