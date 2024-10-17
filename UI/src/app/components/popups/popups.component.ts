@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ApiService } from '../../services/api.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { ApiService } from '../../services/api.service';
   styleUrl: './popups.component.css'
 })
 export class PopupsComponent {
-  constructor(public dialogRef: MatDialogRef<PopupsComponent>,
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<PopupsComponent>,
     private apiService: ApiService
   ) {}
 
