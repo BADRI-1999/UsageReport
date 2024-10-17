@@ -21,6 +21,10 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { DownloadComponent } from './components/download/download.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { CommonModule } from '@angular/common';
+import {PopupsComponent} from './components/popups/popups.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 // MSAL Instance Factory to create PublicClientApplication
@@ -70,12 +74,18 @@ export function initializeApp(configService: ConfigService, handler: HttpBackend
    
     AppComponent,
     DashboardComponent,
+   
     
    
 
    
   ],
   imports: [
+    
+    CommonModule,
+    MatProgressSpinnerModule,
+    PopupsComponent,
+    NavbarComponent,
     ReactiveFormsModule,
     AppRoutingModule,
     BrowserModule,

@@ -6,6 +6,10 @@
         SYNC <img src="assets/cloud-sync.png" alt="Sync Icon">
     </button>
 
+    <div *ngIf="isLoading" class="loading-spinner">
+      <span>Loading...</span> 
+    </div>
+
     <!-- Div where Handlebars will insert the generated content -->
     <div id="display">
     </div>
@@ -28,17 +32,11 @@
                   <input matStartDate formControlName="start" placeholder="Start date">
                   <input matEndDate formControlName="end" placeholder="End date">
                 </mat-date-range-input>
-                <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+               
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-date-range-picker #picker></mat-date-range-picker>
               
-                @if (range.controls['start'].hasError('matStartDateInvalid')) {
-                  <mat-error>Invalid start date</mat-error>
-                }
-                @if (range.controls['end'].hasError('matEndDateInvalid')) {
-                  <mat-error>Invalid end date</mat-error>
-                }
-                <input matInput type="datetime-local" placeholder="start date">
+            
               </mat-form-field>
               
               <p>Selected range: {{range.value | json}}</p>
@@ -51,19 +49,23 @@
             </div>
 
             <button (click) = "callApi()">Submit </button>
+          
+            
+     
         </div>
 
 
         
     </div>
-    <button (click)="getdownload()" *ngIf="display">Download</button>
+
+    <div class="share">
+
+    </div>
+    <!-- <button (click)="getdownload()" *ngIf="display">Download</button> -->
+    <button mat-raised-button color="primary" (click)="openShareDialog()" *ngIf="display" >Share</button>
     
 </div>
 
 
-<button id="logout-button" (click)="logout()">
-    <span class="button-text">LOG OUT</span>
-    <span class="icon"><img src="assets/exit.png" alt="logout icon"></span>
-</button>
 
 

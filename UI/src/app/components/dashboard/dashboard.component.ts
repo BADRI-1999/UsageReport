@@ -5,6 +5,8 @@ import { SubscriptionService } from "../../services/subscription.service";
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
 import { firstValueFrom } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog'; 
+import {  PopupsComponent} from '../popups/popups.component'
 
 @Component({
   selector: 'app-dashboard',
@@ -15,31 +17,42 @@ export class DashboardComponent implements OnInit {
   usageDetails: any; // Store the usage details
   display: boolean = false;
   showModal: boolean = false;
+  share: boolean = false;
   selectedHours: number = 1;
   range: FormGroup; // Define FormGroup for date range
   isDateRangeSelected: boolean = false; // New property for toggle state
   startDate: Date | null = null;
   endDate: Date | null = null;
+  isLoading: boolean = false;
 
 
   constructor(
+    public dialog: MatDialog,
     private subscriptionService: SubscriptionService,
     private authService: AuthService,
     private fb: FormBuilder,
     private apiService: ApiService
   ) {
     this.range = this.fb.group({
-      start: [null, Validators.required], 
-      end: [null, Validators.required],
-      startTime: ['', Validators.required],
-      endTime: ['', Validators.required] 
+      start: [null, Validators.required], // Start date
+      end: [null, Validators.required]      // End date
     });
+
   }
 
   ngOnInit(): void {
     console.log("Getting usage report");
     this.openModal()
-    // this.subscriptionService.getUsageDetails('52435666-b2cb-431f-8490-6f1524da777e', '2024-08-01', '2024-09-30');
+  }
+
+  openShareDialog(): void {
+    const dialogRef = this.dialog.open(PopupsComponent, {
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Share dialog was closed');
+    });
   }
 
   renderTemplate() {
@@ -99,6 +112,10 @@ export class DashboardComponent implements OnInit {
     this.showModal = true; // Open the modal
   }
 
+  openShare(){
+    this.share = true;
+  }
+
   closeModal() {
     
     this.showModal = false; // Close the modal
@@ -106,14 +123,19 @@ export class DashboardComponent implements OnInit {
     this.resetForm(); // Reset form when closing the modal
   }
 
+  closeShare(){
+    this.share = false;
+  }
+
   resetForm() {
     this.range.reset(); // Reset the form fields
-    this.isDateRangeSelected = false; // Reset toggle state
+    // this.isDateRangeSelected = false; // Reset toggle state
 
   }
 
   onToggleChange(event: any) {
     this.isDateRangeSelected = event.checked; // Update the state based on toggle
+    console.log("date checker:", this.isDateRangeSelected)
   }
 
   selectOption(hours: number) {
@@ -123,40 +145,34 @@ export class DashboardComponent implements OnInit {
 
 
   async callApi() {
+    this.isLoading = true;
+    this.closeModal();
 
     if(this.isDateRangeSelected){
+      console.log("inside date range", this.isDateRangeSelected)
       this.startDate = this.range.value.start;
       this.endDate = this.range.value.end;
+      console.log(this.range.value.start)
+      console.log(this.range.value.end)
       
   
       if (!this.startDate || !this.endDate) {
         console.error("Start and end dates are required.");
         return; // Exit if dates are not valid
       }
+
   
     }
     else{
     // const staticDate = new Date('2024-03-12T22:00:00');
     this.endDate  = new Date(Date.now());
     this.startDate = new Date(this.endDate.getTime() - this.selectedHours * 60 * 60 * 1000);
-
+    console.log("end time = ", this.startDate);
+    console.log("start time = ", this.startDate);
     }
   
 
-    console.log("end time = ", this.startDate);
-    console.log("start time = ", this.startDate);
 
-    // this.subscriptionService.getUsageDetails('52435666-b2cb-431f-8490-6f1524da777e', this.startDate.toISOString(), this.endDate.toISOString());
-    
-    
-    // this.subscriptionService.usageDetails$.subscribe(data => {
-    //   this.usageDetails = data;
-    //   console.log('Received usage details in DashboardComponent:', this.usageDetails);
-    //   this.renderTemplate()
-    // });
-    // console.log("user details",this.usageDetails);
-    // // await this.renderTemplate();
-    // this.closeModal();
     
 
     try {
@@ -166,11 +182,14 @@ export class DashboardComponent implements OnInit {
       
       console.log('Received usage details in DashboardComponent:', this.usageDetails);
       
-    
+      
+      
       this.renderTemplate();
-      this.closeModal();
+      
     } catch (error) {
       console.error("Error fetching usage details: ", error);
+    } finally {
+      this.isLoading = false; 
     }
 
   }
@@ -188,5 +207,11 @@ export class DashboardComponent implements OnInit {
   getdownload (){
     this.apiService.downloadTable(this.usageDetails);
   }
+
+
+
+
+
+  
 
 }

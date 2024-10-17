@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MSAL_INSTANCE, MsalBroadcastService } from '@azure/msal-angular';
 import { AuthenticationResult, EventMessage, EventType, InteractionStatus, PublicClientApplication } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 
@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -24,6 +24,7 @@ export class LoginComponent {
     accessToken = '';
     isInteractionInProgress: boolean | undefined;
     idToken = ''
+    isLoading: boolean = false;
     constructor(
       private authService: AuthService,
       private msalBroadcastService: MsalBroadcastService,
@@ -55,6 +56,7 @@ export class LoginComponent {
     login() {
 
       this.authService.login();
+      this.isLoading = true;
       
     }
     
