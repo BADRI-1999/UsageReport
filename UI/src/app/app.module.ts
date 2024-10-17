@@ -25,6 +25,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import {PopupsComponent} from './components/popups/popups.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
 
 
 // MSAL Instance Factory to create PublicClientApplication
@@ -83,6 +84,7 @@ export function initializeApp(configService: ConfigService, handler: HttpBackend
   imports: [
     
     CommonModule,
+    MatIconModule,
     MatProgressSpinnerModule,
     PopupsComponent,
     NavbarComponent,

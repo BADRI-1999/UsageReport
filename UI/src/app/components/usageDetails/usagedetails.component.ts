@@ -42,7 +42,7 @@ export class UsageDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     console.log("Getting usage report");
-    this.openModal()
+    this.callApi()
   }
 
   openShareDialog(): void {

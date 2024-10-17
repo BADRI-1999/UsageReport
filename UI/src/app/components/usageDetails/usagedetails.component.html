@@ -2,9 +2,9 @@
 <div id="report">
 
     
-    <button id="sync-button" (click)="openModal()">
-        SYNC <img src="assets/cloud-sync.png" alt="Sync Icon">
-    </button>
+  <button id ='sync-button' mat-raised-button color="primary" (click)="openModal()">
+    SYNC <mat-icon>sync</mat-icon>
+  </button>
 
     <div *ngIf="isLoading" class="loading-spinner">
       <span>Loading...</span> 
