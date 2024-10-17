@@ -120,7 +120,7 @@ export class DashboardComponent implements OnInit {
     
     this.showModal = false; // Close the modal
     
-    this.resetForm(); // Reset form when closing the modal
+    // this.resetForm(); // Reset form when closing the modal
   }
 
   closeShare(){
