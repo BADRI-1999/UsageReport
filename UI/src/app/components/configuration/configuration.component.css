@@ -1,0 +1,16 @@
+.configuration-cards {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+  .config-card {
+    width: 300px;
+    cursor: pointer;
+  }
+  
+  .config-card:hover {
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+  }
+  

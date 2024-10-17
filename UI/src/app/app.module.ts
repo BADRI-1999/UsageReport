@@ -26,7 +26,8 @@ import { CommonModule } from '@angular/common';
 import {PopupsComponent} from './components/popups/popups.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
-
+import { MatCardModule } from '@angular/material/card';
+import { ConfigurationComponent } from './components/configuration/configuration.component'
 
 // MSAL Instance Factory to create PublicClientApplication
 export function MSALInstanceFactory(config:ConfigService): IPublicClientApplication {
@@ -75,6 +76,7 @@ export function initializeApp(configService: ConfigService, handler: HttpBackend
    
     AppComponent,
     UsageDetailsComponent,
+    
    
     
    
@@ -84,6 +86,7 @@ export function initializeApp(configService: ConfigService, handler: HttpBackend
   imports: [
     
     CommonModule,
+    MatCardModule,  
     MatIconModule,
     MatProgressSpinnerModule,
     PopupsComponent,
@@ -103,6 +106,7 @@ export function initializeApp(configService: ConfigService, handler: HttpBackend
     FormsModule,
     MatSlideToggleModule,
     DownloadComponent,
+    ConfigurationComponent,
 
     
   ],

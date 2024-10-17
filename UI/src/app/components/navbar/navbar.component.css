@@ -1,17 +1,17 @@
 
 
 .navbar {
-    position: sticky;
-    top: 0;
-   
-    background-color: #4e76c2;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;
-    color: white;
-  } 
+  position: fixed; 
+  top: 0;   
+  background-color: #4e76c2;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  color: white;
+}
+
   
   /* Logo */
   .navbar-logo {
@@ -103,19 +103,19 @@ img{
     background-color: #ddd;
   }
   
-  /* Sidebar styles */
   .sidebar {
-    width: 0;
-    position:absolute;
+
+    width: 200px; /* Fixed width */
+    position: fixed; /* Keep it in view */
     z-index: 1000;
-
     left: 0;
-    background-color: #111;
-    overflow-x: hidden;
-    transition: 0.3s;
+    top: 0; /* Align to the top */
+    height: 100vh; /* Full height of the viewport */
+    margin-top: 65px;
+    background: #5077c3;
+    overflow-y: auto; /* Allow scrolling if content overflows */
     padding-bottom: 20px;
-
-  }
+}
   
   .sidebar.open {
     width: 200px;
@@ -156,4 +156,10 @@ img{
   padding-bottom: 25px;
 
 
+}
+
+.main-content {
+  margin-left: 220px; /* Leave space for the sidebar and add extra space */
+  margin-top: 60px; /* Add space for the sticky navbar */
+  padding: 20px; /* Optional padding for your main content */
 }

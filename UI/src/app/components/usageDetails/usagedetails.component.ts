@@ -141,6 +141,8 @@ export class UsageDetailsComponent implements OnInit {
   selectOption(hours: number) {
     this.selectedHours = hours; // Set the selected hours
 
+    this.callApi();
+
   }
 
 

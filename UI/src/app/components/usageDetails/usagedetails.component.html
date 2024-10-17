@@ -1,5 +1,8 @@
+<app-navbar></app-navbar> 
+<div class="container">
 
-<div id="report">
+
+<div id="report" >
 
     
   <button id ='sync-button' mat-raised-button color="primary" (click)="openModal()">
@@ -7,7 +10,7 @@
   </button>
 
     <div *ngIf="isLoading" class="loading-spinner">
-      <span>Loading...</span> 
+      <mat-spinner></mat-spinner>
     </div>
 
     <!-- Div where Handlebars will insert the generated content -->
@@ -36,7 +39,8 @@
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-date-range-picker #picker></mat-date-range-picker>
               
-            
+                <button (click) = "callApi()">Submit </button>
+
               </mat-form-field>
               
               <p>Selected range: {{range.value | json}}</p>
@@ -48,7 +52,7 @@
             <button (click)="selectOption(3)">Last 3 Hours</button>
             </div>
 
-            <button (click) = "callApi()">Submit </button>
+            
           
             
      
@@ -69,3 +73,4 @@
 
 
 
+</div>
