@@ -1,4 +1,5 @@
 
+<app-navbar></app-navbar> 
 <div class="container">
 
 
@@ -19,7 +20,7 @@
 
 
     <div class="modal" *ngIf="showModal">
-        <p>inside showModal</p>
+        <!-- <p>inside showModal</p> -->
         <div class="modal-content">
             <span class="close" (click)="closeModal()">&times;</span>
             <h2>Select Time Interval</h2>
@@ -66,7 +67,7 @@
 
     </div>
     <!-- <button (click)="getdownload()" *ngIf="display">Download</button> -->
-    <button mat-raised-button color="primary" (click)="openShareDialog()" *ngIf="display" >Share</button>
+    <button mat-raised-button color="primary" (click)="openShareDialog()" *ngIf="usageDetails != null" >Share</button>
     
 </div>
 

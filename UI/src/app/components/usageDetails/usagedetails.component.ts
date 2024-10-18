@@ -42,9 +42,9 @@ export class UsageDetailsComponent implements OnInit {
 
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     console.log("Getting usage report");
-    this.callApi()
+    await this.callApi()
   }
 
   openShareDialog(): void {
@@ -185,12 +185,13 @@ export class UsageDetailsComponent implements OnInit {
       this.usageDetails = await firstValueFrom(
         this.subscriptionService.getUsageDetails('52435666-b2cb-431f-8490-6f1524da777e', this.startDate.toISOString(), this.endDate.toISOString())
       );
-      
       console.log('Received usage details in DashboardComponent:', this.usageDetails);
       
       
       
       this.renderTemplate();
+      
+      
       
     } catch (error) {
       console.error("Error fetching usage details: ", error);
