@@ -35,14 +35,16 @@ export class LoginComponent {
       @Inject(MSAL_INSTANCE) private msalInstance: PublicClientApplication
   
     ) {
-      this.login();
+      
       // this.callApi();
     }
-  
-    clearMsalCache() {
-      this.msalInstance.clearCache();  
-      console.log("MSAL cache cleared.");
+
+
+    ngOnInit() {
+      this.login();
     }
+  
+
   
    
 
@@ -53,14 +55,32 @@ export class LoginComponent {
       this._destroying$.next(undefined);
       this._destroying$.complete();
     }
-  
-    login() {
 
+
+    // login() {
+
+    //   this.authService.login();
+    //   this.isLoading = true;
+      
+    // }
+
+    login() {
       this.authService.login();
       this.isLoading = true;
       
+      // const accounts = this.msalInstance.getAllAccounts();
+      
+      // if (accounts.length > 0) {
+      //   console.log("User is already logged in");
+       
+      //   this.router.navigate(['/usagedetails']); // Redirect if logged in
+      // } else {
+      // this.authService.login();
+      // this.isLoading = true;
+      // }
+  
+  
     }
-    
   
     
 

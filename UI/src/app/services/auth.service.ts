@@ -1,3 +1,6 @@
+// 
+
+
 import { Injectable } from '@angular/core';
 import { AccountInfo, AuthenticationResult, IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser';
 import { MsalService } from '@azure/msal-angular';
@@ -10,74 +13,96 @@ import { ConfigService } from './config.service';
   providedIn: 'root'
 })
 export class AuthService {
-
   instance: IPublicClientApplication | undefined;
   accessToken = '';
   idToken = '';
   loggedInUser = '';
   loginType = 'msal';
-  loggedIn = false
+  loggedIn = false;
   account!: AccountInfo | null;
+
   constructor(
     private msalService: MsalService,
     private http: HttpClient,
     private router: Router,
-    private config:ConfigService
+    private config: ConfigService
   ) {
     this.instance = this.msalService.instance;
+
     // Load configuration from config.json
+    this.accessToken = localStorage.getItem(this.accessToken) as string;
 
-    this.accessToken = localStorage.getItem(this.accessToken) as string
-      
-      // Handle Redirect Observable for login
-      this.msalService.handleRedirectObservable().subscribe({
-        next: (result: AuthenticationResult | null) => {
-          if (result) {
-            console.log('Login successful:', result);
-
-            // Storing tokens and user details
-            this.idToken = result.idToken;
-            this.accessToken = result.accessToken;
-            this.loggedInUser = result.account.username;
-            this.account = result.account
-            console.log(this.accessToken)
-            msalService.instance.setActiveAccount(this.account)
-
-            localStorage.setItem('idToken', this.idToken);  // Storing idToken in localStorage
-            localStorage.setItem('accessToken', this.accessToken);  // Storing accessToken in localStorage
-            localStorage.setItem('loginType', this.loginType);  // Storing login type in localStorage
-            localStorage.setItem('loggedInUser', this.loggedInUser);  // Storing loggedInUser in localStorage
-            this.loggedIn = true
-            // Navigate to dashboard
-            this.router.navigateByUrl('/usagedetails');
-          }
-        },
-        error: (error) => console.log(error)
-      });
+    // Handle Redirect Observable for login
+    this.msalService.handleRedirectObservable().subscribe({
+      next: (result: AuthenticationResult | null) => {
+        if (result) {
+          console.log('Login successful:', result);
+          this.setUserDetails(result);
+        }
+      },
+      error: (error) => console.log(error)
+    });
     
+    // Check if a user is already logged in
+    this.checkExistingAccount();
   }
 
-  // Function to load the configuration from config.json
-  
+  private setUserDetails(result: AuthenticationResult) {
+    this.idToken = result.idToken;
+    this.accessToken = result.accessToken;
+    this.loggedInUser = result.account.username;
+    this.account = result.account;
 
-  async login() {  // No need for Observable or returning
-         // Set the flag when starting the login process
-        try {
-            await this.instance?.initialize()
-      
+    console.log(this.accessToken);
+    this.msalService.instance.setActiveAccount(this.account);
 
-          
-          console.log("calling login")
-          console.log()
-          if(this.msalService.instance.getActiveAccount() == null){
-          this.msalService.loginRedirect();  
-            }
-        } catch (error) {
-          console.error("MSAL initialization failed: ", error);
-          
-          // throw error;  // No need for `throwError`, just rethrow the error
-        }
+    // Store tokens and user details in localStorage
+    localStorage.setItem('idToken', this.idToken);
+    localStorage.setItem('accessToken', this.accessToken);
+    localStorage.setItem('loginType', this.loginType);
+    localStorage.setItem('loggedInUser', this.loggedInUser);
+    this.loggedIn = true;
+
+    // Navigate to dashboard
+    this.router.navigateByUrl('/usagedetails');
+  }
+
+  private checkExistingAccount() {
+    const existingAccount = this.msalService.instance.getAllAccounts();
+
+    if (existingAccount.length > 0) {
+      console.log("User is already logged in");
+      this.account = existingAccount[0]; // Use the first account
+      this.msalService.instance.setActiveAccount(this.account);
+      this.router.navigateByUrl('/usagedetails'); // Redirect if logged in
+    }
+  }
+
+  async login() {  
+    try {
+      await this.instance?.initialize();
+      console.log("Calling login");
+
+      // Handle any redirect response
+      const redirectResponse = await this.msalService.instance.handleRedirectPromise();
+      if (redirectResponse !== null) {
+        console.log("Redirect response: ", redirectResponse);
+        this.setUserDetails(redirectResponse); // Set user details
+        return; // Stop further execution if already logged in
       }
+
+      // Only call loginRedirect if no active account exists
+      if (this.msalService.instance.getActiveAccount() == null) {
+        console.log("No active account, triggering loginRedirect");
+        this.msalService.loginRedirect();
+      } else {
+        this.account = this.msalService.instance.getActiveAccount();
+        console.log("Active account found");
+      }
+    } catch (error) {
+      console.error("MSAL initialization failed: ", error);
+    }
+  }
 
   logout(): void {
     this.msalService.logoutRedirect();
@@ -92,94 +117,3 @@ export class AuthService {
     return this.http.get('http://localhost:3000/api/protected/', { headers });
   }
 }
-
-
-
-
-
-
-// import { Injectable } from '@angular/core';
-// import { AccountInfo, AuthenticationResult, IPublicClientApplication } from '@azure/msal-browser';
-// import { MsalService } from '@azure/msal-angular';
-// import { catchError, Observable, Subject, tap, throwError } from 'rxjs';
-// import { HttpClient, HttpHeaders } from '@angular/common/http';
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class AuthService {
-
-//   private readonly _destroying$ = new Subject<void>();
-//   loginDisplay = false;
-//   instance: IPublicClientApplication;
-//   msalInstance: any;
-
-//   constructor(
-//     private msalService: MsalService,
-//     private http: HttpClient
-//   ) {
-//     this.instance = this.msalService.instance;
-
-//     // Handle the redirect promise in the constructor
-//     this.instance.handleRedirectPromise().then((result: AuthenticationResult | null) => {
-//       if (result) {
-//         this.instance.setActiveAccount(result.account);
-//         console.log('Login redirect response received', result);
-//         this.loginDisplay = true; // Show login display after successful login
-//       }
-//     }).catch((error) => {
-//       console.error('Error handling redirect:', error);
-//     });
-//   }
-
-//   getAllAccounts(): AccountInfo[] {
-//     return this.msalInstance.getAllAccounts();  // Make sure this returns an array of accounts
-//   }
-
-//   private loginInProgress: boolean = false;  // Add a flag for login in progress
-
-
-//   async login(): Promise<void> {  // No need for Observable or returning
-//     if (this.loginInProgress) {
-//       console.log("Login already in progress, skipping...");
-//       return;
-//     }
-
-//     this.loginInProgress = true;  // Set the flag when starting the login process
-//     try {
-//       await this.instance.initialize();
-
-//       // Instead of loginPopup(), use loginRedirect() for redirect login flow
-//       this.msalService.loginRedirect();  // This will handle the redirect to the Microsoft login page
-//       this.loginInProgress = false;  // Reset the flag after initiating the redirect
-//     } catch (error) {
-//       console.error("MSAL initialization failed: ", error);
-//       this.loginInProgress = false;  // Reset the flag on error
-//       throw error;  // No need for `throwError`, just rethrow the error
-//     }
-//   }
-
-
-
-//   logout() {
-//     this.msalService.logout();
-//   }
-
-//   ngOnDestroy(): void {
-//     this._destroying$.next(undefined);
-//     this._destroying$.complete();
-//   }
-
-
-//   sendData(accessToken: string) {
-//     const headers = {
-//       'Authorization': `Bearer ${accessToken}`,  // Add the access token to the Authorization header
-//       'Content-Type': 'application/json'         // Optional, depending on the content type
-//     };
-  
-//     return this.http.get('http://localhost:3000/api/protected/',{ headers });
-//   }
-
-
-
-// }

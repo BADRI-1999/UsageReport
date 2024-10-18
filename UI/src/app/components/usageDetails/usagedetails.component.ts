@@ -169,16 +169,17 @@ export class UsageDetailsComponent implements OnInit {
 
   
     }
-    else{
+    else {
     // const staticDate = new Date('2024-03-12T22:00:00');
+    if(!this.selectedHours){
+      this.selectedHours=1
+    }
+    console.log("inside api and selcted hours: ", this.selectedHours)
     this.endDate  = new Date(Date.now());
     this.startDate = new Date(this.endDate.getTime() - this.selectedHours * 60 * 60 * 1000);
     console.log("end time = ", this.startDate);
     console.log("start time = ", this.startDate);
     }
-  
-
-
     
 
     try {
