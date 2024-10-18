@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -11,6 +12,20 @@ import { Router } from '@angular/router';
 })
 export class NavbarComponent {
   sidebarOpen = false;
+  isUsageActive: boolean = false;
+  isConfigActive: boolean = false;
+
+  toggleButton(button: string) {
+    if (button === 'usage') {
+      this.isUsageActive = true;
+      this.isConfigActive = false;
+      this.router.navigate(['/usagedetails'])
+    } else if (button === 'config') {
+      this.isConfigActive = true;
+      this.isUsageActive = false;
+      this.router.navigate(['/configuartion'])
+    }
+  }
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -26,6 +41,10 @@ export class NavbarComponent {
   }
 
   gotoazure(){
-    this.router.navigate(['/dashboard'])
+    this.router.navigate(['/usagedetails'])
+  }
+
+  gotoconfiguration(){
+    this.router.navigate(['/configuartion'])
   }
 }

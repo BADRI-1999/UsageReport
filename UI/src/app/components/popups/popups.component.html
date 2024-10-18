@@ -3,16 +3,16 @@
     <p></p>
   <div class="share">
 <p> Share </p>
-    <button mat-button><img src="assets/mail_icon.png" alt="Email"></button>
+    <button (click)="sendEmail()" mat-button><img src="assets/mail_icon.png" alt="Email"></button>
   </div>
   <hr>
 
 <div class="'download">
 
     <p>Download</p>
-    <button mat-button><img src="assets/csv_icon.png" alt="csv"> </button>
+    <button (click)="downloadcsv()" mat-button><img src="assets/csv_icon.png" alt="csv"> </button>
     <button mat-button><img src="assets/excel_icon.png" alt="excel">  </button>
-    <button mat-button><img src="assets/pdf_icon.png" alt="pdf"></button>
+    <button (click)="downloadpdf()"  mat-button><img src="assets/pdf_icon.png" alt="pdf"></button>
   
 </div>
 

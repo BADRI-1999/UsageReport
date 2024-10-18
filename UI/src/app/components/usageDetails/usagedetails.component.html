@@ -1,4 +1,4 @@
-<app-navbar></app-navbar> 
+
 <div class="container">
 
 
@@ -39,11 +39,11 @@
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-date-range-picker #picker></mat-date-range-picker>
               
-                <button (click) = "callApi()">Submit </button>
+               
 
               </mat-form-field>
               
-              <p>Selected range: {{range.value | json}}</p>
+              <button (click) = "callApi()">Submit </button>
               </div>
 
             <div *ngIf="!isDateRangeSelected">

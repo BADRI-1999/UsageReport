@@ -49,7 +49,7 @@ export class AuthService {
             localStorage.setItem('loggedInUser', this.loggedInUser);  // Storing loggedInUser in localStorage
             this.loggedIn = true
             // Navigate to dashboard
-            this.router.navigateByUrl('/dashboard');
+            this.router.navigateByUrl('/usagedetails');
           }
         },
         error: (error) => console.log(error)

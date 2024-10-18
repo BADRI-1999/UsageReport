@@ -2,11 +2,9 @@
   <nav class="navbar">
     <!-- Left side: Logo and menu toggle button -->
     <div class="navbar-left">
-      <button class="left-nav-toggle" (click)="toggleSidebar()" aria-label="Toggle navigation menu">
-        &#9776;
-      </button>
+
       <a routerLink="/" class="navbar-logo">
-        <img class="logo_img" src="assets/Logo.jpeg" alt="Your Logo">
+        <img class="logo_img" src="assets/logo.png" alt="Your Logo">
       </a>
     </div>
 
@@ -33,11 +31,15 @@
     </div>
   </nav>
 
-  <!-- Sidebar for navigation links -->
   <aside class="sidebar">
     <ul>
-      <li><a routerLink="/usage-details">Usage Details</a></li>
-      <li><a routerLink="/configuration">Configuration</a></li>
+      <button class="sidebar-btn" [class.active]="isUsageActive" (click)="toggleButton('usage')">
+        Usage Details
+      </button>
+      
+      <button class="sidebar-btn" [class.active]="isConfigActive" (click)="toggleButton('config')">
+        Configuration
+      </button>
     </ul>
   </aside>
 

@@ -10,8 +10,11 @@
   align-items: center;
   z-index: 1000;
   color: white;
-}
 
+}
+.navbar-right{
+  MARGIN-LEFT: 882PX;
+}
   
   /* Logo */
   .navbar-logo {
@@ -131,7 +134,7 @@ img{
   }
   
   .sidebar ul li a {
-    color: white;
+    
     text-decoration: none;
     display: block;
   }
@@ -152,14 +155,33 @@ img{
   background: none; /* Remove background */
   border: none; /* Remove border */
   cursor: pointer; /* Pointer cursor on hover */
-  color: white; /* Change color to fit your theme */
+   /* Change color to fit your theme */
   padding-bottom: 25px;
 
 
 }
+.sidebar-btn {
+  width: 80%;
+  padding: 15px 20px;
+  background-color: transparent;
+  border: none;
+  border-radius: 30px; /* Rounded buttons like in the image */
+  margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffff;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
 
-.main-content {
-  margin-left: 220px; /* Leave space for the sidebar and add extra space */
-  margin-top: 60px; /* Add space for the sticky navbar */
-  padding: 20px; /* Optional padding for your main content */
+.sidebar-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2); /* Slightly transparent white on hover */
+}
+
+/* Active state when clicked */
+.sidebar-btn.active {
+  background-color: white;
+  color: #2b3a67; /* Dark blue color when active */
 }

@@ -1,13 +1,16 @@
 // src/app/services/api.service.ts
 
+import { HttpHeaders,HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
+  usagedata: any;
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   downloadTable(usageDetails: any) {
     // Check if usageDetails is available
@@ -64,4 +67,40 @@ export class ApiService {
     const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
     return csv;
   }
+
+
+
+  sendEmail(to: string, subject: string, text: string, data: any): Observable<any> {
+    const body = {
+      to,
+      subject,
+      text,
+      data
+    };
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.post<any>('http://localhost:3000/api/send-email', body, { headers });
+  }
+
+
+  downloadPDF(data:any){
+
+    return this.http.post<any>('http://localhost:3000/api/download-pdf', data, { responseType: 'blob' as 'json'});
+  }
+
+
+  downloadCSV(data:any){
+    this.usagedata = data
+
+return this.http.post<any>('http://localhost:3000/api/download-csv', this.usagedata, { responseType: 'blob' as 'json'});
+
+  }
+
+
+  // dowloadExcel(data:any){
+  //   return this.http.post<any>('http://localhost:3000/aapi/download-csv', data);
+  // }
 }

@@ -7,7 +7,7 @@ import { ConfigurationComponent } from './components/configuration/configuration
 
 export const routes: Routes = [
     {path:'login', component:LoginComponent},
-    { path: 'dashboard', component: UsageDetailsComponent },
+    { path: 'usagedetails', component: UsageDetailsComponent },
     {path:'download', component:DownloadComponent},
     {path:'configuartion', component: ConfigurationComponent},
 

@@ -38,6 +38,7 @@ router.get("/api/protected", checkJwt, (req, res) => {
 // Route to send email with CSV attachment
 router.post("/api/send-email", async (req, res) => {
   try {
+  
     let { to, subject, text, data } = req.body;
     data = data.value.map(item => item.properties);
     let csv = await createCsv(data)
@@ -81,6 +82,7 @@ router.post("/api/send-email", async (req, res) => {
 
 router.post("/api/download-csv", async (req, res) => {
   try {
+    
     const jsonData = req.body;
 
     if (!jsonData || !jsonData.value) {
@@ -109,6 +111,7 @@ router.post("/api/download-csv", async (req, res) => {
 });
 router.post("/api/download-pdf", async (req, res) => {
   try {
+    
     const jsonData = req.body;
 
     if (!jsonData || !jsonData.value) {

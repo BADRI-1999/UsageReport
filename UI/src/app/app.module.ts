@@ -29,6 +29,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { ConfigurationComponent } from './components/configuration/configuration.component'
 
+
 // MSAL Instance Factory to create PublicClientApplication
 export function MSALInstanceFactory(config:ConfigService): IPublicClientApplication {
   console.log("Configuration in msal initialize",config.config)

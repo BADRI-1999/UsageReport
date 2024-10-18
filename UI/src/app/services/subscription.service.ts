@@ -59,7 +59,7 @@ export class SubscriptionService {
         switchMap(data => {
           this.usageDetailsSubject.next(data);
           console.log('Usage details:', data);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/usagedetails']);
           return of(data); // Return the data wrapped in an Observable
         })
       );

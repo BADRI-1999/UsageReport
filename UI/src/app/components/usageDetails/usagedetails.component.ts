@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as Handlebars from 'handlebars';
 import { SubscriptionService } from "../../services/subscription.service";
@@ -8,10 +8,12 @@ import { firstValueFrom } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog'; 
 import {  PopupsComponent} from '../popups/popups.component'
 
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './usagedetails.component.html',
-  styleUrls: ['./usagedetails.component.css']
+  styleUrls: ['./usagedetails.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class UsageDetailsComponent implements OnInit {
   usageDetails: any; // Store the usage details
@@ -67,39 +69,39 @@ export class UsageDetailsComponent implements OnInit {
   }
     // Handlebars template defined directly in TypeScript
     const templateScript = `
-      <table>
-        <thead>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Product</th>
+          <th>Billing Period</th>
+          <th>Quantity</th>
+          <th>Effective Price</th>
+          <th>Cost</th>
+          <th>Unit Price</th>
+          <th>Publisher</th>
+          <th>Resource Location</th>
+          <th>Offer ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each value}}
           <tr>
-            <th>Date</th>
-            <th>Product</th>
-            <th>Billing Period</th>
-            <th>Quantity</th>
-            <th>Effective Price</th>
-            <th>Cost</th>
-            <th>Unit Price</th>
-            <th>Publisher</th>
-            <th>Resource Location</th>
-            <th>Offer ID</th>
+            <td>{{properties.date}}</td>
+            <td>{{properties.product}}</td>
+            <td>{{properties.billingPeriodStartDate}} <hr> {{properties.billingPeriodEndDate}}</td>
+            <td>{{properties.quantity}}</td>
+            <td>{{properties.effectivePrice}}</td>
+            <td>{{properties.cost}} {{properties.billingCurrency}}</td>
+            <td>{{properties.unitPrice}}</td>
+            <td>{{properties.publisherType}}</td>
+            <td>{{properties.resourceLocation}}</td>
+            <td>{{properties.offerId}}</td>
           </tr>
-        </thead>
-        <tbody>
-          {{#each value}}
-            <tr>
-              <td>{{properties.date}}</td>
-              <td>{{properties.product}}</td>
-              <td>{{properties.billingPeriodStartDate}} <hr> {{properties.billingPeriodEndDate}}</td>
-              <td>{{properties.quantity}}</td>
-              <td>{{properties.effectivePrice}}</td>
-              <td>{{properties.cost}} {{properties.billingCurrency}}</td>
-              <td>{{properties.unitPrice}}</td>
-              <td>{{properties.publisherType}}</td>
-              <td>{{properties.resourceLocation}}</td>
-              <td>{{properties.offerId}}</td>
-            </tr>
-          {{/each}}
-        </tbody>
-      </table>
-    `;
+        {{/each}}
+      </tbody>
+    </table>
+  `;
     const template = Handlebars.compile(templateScript);
 
     // Pass data to Handlebars and generate the HTML
