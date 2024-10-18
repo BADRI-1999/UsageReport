@@ -9,6 +9,7 @@
   <button id ='sync-button' mat-raised-button color="primary" (click)="openModal()">
     SYNC <mat-icon>sync</mat-icon>
   </button>
+  <button mat-raised-button color="primary" (click)="openShareDialog()" *ngIf="usageDetails != null" >Share</button>
 
     <div *ngIf="isLoading" class="loading-spinner">
       <mat-spinner></mat-spinner>
@@ -67,7 +68,7 @@
 
     </div>
     <!-- <button (click)="getdownload()" *ngIf="display">Download</button> -->
-    <button mat-raised-button color="primary" (click)="openShareDialog()" *ngIf="usageDetails != null" >Share</button>
+    
     
 </div>
 
