@@ -176,6 +176,7 @@ export class UsageDetailsComponent implements OnInit {
     this.startDate = new Date(this.endDate.getTime() - this.selectedHours * 60 * 60 * 1000);
     console.log("end time = ", this.startDate);
     console.log("start time = ", this.startDate);
+    
     }
     
 
@@ -184,6 +185,7 @@ export class UsageDetailsComponent implements OnInit {
         this.subscriptionService.getUsageDetails('52435666-b2cb-431f-8490-6f1524da777e', this.startDate.toISOString(), this.endDate.toISOString())
       );
       console.log('Received usage details in DashboardComponent:', this.usageDetails);
+      this.subscriptionService.getusagereportbyHour(this.selectedHours);
       
       
       
