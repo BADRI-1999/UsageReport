@@ -9,13 +9,13 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class SubscriptionService {
-  private apiUrl = 'https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.Consumption/usageDetails';
-  private baseUrls: string[] = [
-    'https://management.azure.com/subscriptions/52435666-b2cb-431f-8490-6f1524da777e/resourceGroups/chatbot/providers/Microsoft.Storage/storageAccounts/dhruvabot/providers/microsoft.insights/metrics?api-version=2024-02-01&metricnames=UsedCapacity&aggregation=Average',
-    'https://management.azure.com/subscriptions/52435666-b2cb-431f-8490-6f1524da777e/resourceGroups/chatbot/providers/Microsoft.Web/sites/dhruvachatbot/providers/microsoft.insights/metrics?api-version=2024-02-01&metricnames=MemoryWorkingSet&aggregation=Average',
-    'https://management.azure.com/subscriptions/52435666-b2cb-431f-8490-6f1524da777e/resourceGroups/chatbot/providers/Microsoft.ContainerRegistry/registries/dhruvacontainer/providers/microsoft.insights/metrics?api-version=2024-02-01&metricnames=TotalPullCount,SuccessfulPullCount,TotalPushCount,SuccessfulPushCount,RunDuration,AgentPoolCPUTime,StorageUsed&aggregation=Average'
-  ];
-  
+    private apiUrl = 'https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.Consumption/usageDetails';
+    private baseUrls: string[] = [
+      "https://management.azure.com/subscriptions/52435666-b2cb-431f-8490-6f1524da777e/resourceGroups/chatbot/providers/Microsoft.Storage/storageAccounts/dhruvabot/providers/microsoft.insights/metrics?metricnames=Transactions&timespan=2024-10-30T00:00:00Z/2024-10-31T00:00:00Z&aggregation=Count&interval=PT1H&$filter=GeoType eq 'Primary' and (ApiName eq 'Read' or ApiName eq 'Write')&api-version=2019-07-01",
+      'https://management.azure.com/subscriptions/52435666-b2cb-431f-8490-6f1524da777e/resourceGroups/chatbot/providers/Microsoft.ContainerRegistry/registries/dhruvacontainer/providers/microsoft.insights/metrics?api-version=2024-02-01&metricnames=StorageUsed',
+      'https://management.azure.com/subscriptions/52435666-b2cb-431f-8490-6f1524da777e/resourceGroups/chatbot/providers/Microsoft.RecoveryServices/vaults/vault-ltirtryb/providers/microsoft.insights/metrics?api-version=2024-02-01&metricnames=BackupHealthEvent,RestoreHealthEvent',
+      'https://management.azure.com/subscriptions/52435666-b2cb-431f-8490-6f1524da777e/resourceGroups/chatbot/providers/Microsoft.Web/serverFarms/ASP-chatbot-ba4b?api-version=2024-04-01'   ];
+    
 
   constructor(private http: HttpClient, private msal_service: MsalService, private authService:AuthService,
     private router: Router,
@@ -74,60 +74,58 @@ export class SubscriptionService {
   }
 
   getusagereportbyHour(hour: number) {
-    const timespan = `PT${hour}H`; // Constructs timespan as PT[hours]H
-    const updatedUrls = this.baseUrls.map(url => `${url}&timespan=${timespan}`);
-
-    // Log each updated URL after applying the timespan filter
-    updatedUrls.forEach(url => console.log('Updated URL:', url));
-
-    console.log("Inside getusagereportbyHour func");
+    
 
     // Acquire token silently with the correct scope
     const account = this.authService.account;
   
 
     if (account) {
-      console.log("inside account")
+      console.log("inside account", account)
       return this.msal_service.acquireTokenSilent({
         scopes: ['https://management.azure.com/.default'],
         account
-      }).pipe(
-        switchMap((response: any) => {
-          const token = response.accessToken;
-          console.log("Token:", token);
+      }).subscribe((response: any )=>{
+        console.log("accessstoken",response);
+        const token = response.accessToken;
 
-          // Map each URL to an HTTP GET request with the token in the headers
-          const requests = updatedUrls.map(url =>
-            this.http.get(url, {
-              headers: {
-                'Authorization': `Bearer ${token}`
-              }
-            }).pipe(
-              catchError(error => {
-                console.error('Error fetching data from URL:', url, error);
-                return of(null); // Return null or handle the error as needed for each URL
-              })
-            )
-          );
+        const responses: (Object | null)[] = []
 
-          // Execute all requests in parallel and combine the results
-          return forkJoin(requests).pipe(
-            map((responses: any) => {
-              console.log('All responses:', responses); // Log all responses
-              this.usageDetailsSubject.next(responses); // Store responses in a subject or other variable
+        for (let i = 0; i < this.baseUrls.length; i++) {
+
+          const request =  this.http.get(this.baseUrls[i], {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }).pipe(
+            catchError(error => {
+              console.error('Error fetching usage details', error);
+              return of(null); // Return null or handle the error as needed
             })
           );
-        }),
-        // Subscribe to the response and navigate to usagedetails
-        switchMap(data => {
-          console.log('Final combined data:', data);
-          this.router.navigate(['/usagedetails']);
-          return of(data); // Return the data wrapped in an Observable
-        })
-      );
+
+          request.subscribe(data => {
+            responses.push(data);
+            console.log(`Response from ${this.baseUrls[i]}:`, data);
+            console.log(this.baseUrls.length,'All responses:', responses.length, );
+            if (responses.length === this.baseUrls.length) {
+              console.log('All responses:', responses);
+              this.usageDetailsSubject.next(responses); // Store all responses in the subject
+              // You can navigate or perform additional actions here if needed
+            }
+          })
+         
+
+
+        }
+
+
+      }
+    
+    )
     } else {
       this.authService.login();
-      return of(null); // Return null or handle as needed if account is not available
+      return of(null); 
     }
 }
 

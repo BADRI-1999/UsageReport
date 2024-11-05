@@ -181,9 +181,9 @@ export class UsageDetailsComponent implements OnInit {
     
 
     try {
-      this.usageDetails = await firstValueFrom(
-        this.subscriptionService.getUsageDetails('52435666-b2cb-431f-8490-6f1524da777e', this.startDate.toISOString(), this.endDate.toISOString())
-      );
+      // this.usageDetails = await firstValueFrom(
+      //   this.subscriptionService.getUsageDetails('52435666-b2cb-431f-8490-6f1524da777e', this.startDate.toISOString(), this.endDate.toISOString())
+      // );
       console.log('Received usage details in DashboardComponent:', this.usageDetails);
       this.subscriptionService.getusagereportbyHour(this.selectedHours);
       
