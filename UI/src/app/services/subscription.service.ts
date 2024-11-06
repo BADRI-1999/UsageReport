@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MsalService } from '@azure/msal-angular';
-import { catchError, map, switchMap } from 'rxjs/operators';
-import { BehaviorSubject, Observable, forkJoin, of } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, forkJoin, from, of } from 'rxjs';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 @Injectable({
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 export class SubscriptionService {
     private apiUrl = 'https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.Consumption/usageDetails';
     private baseUrls: string[] = [
-      "https://management.azure.com/subscriptions/52435666-b2cb-431f-8490-6f1524da777e/resourceGroups/chatbot/providers/Microsoft.Storage/storageAccounts/dhruvabot/providers/microsoft.insights/metrics?metricnames=Transactions&timespan=2024-10-30T00:00:00Z/2024-10-31T00:00:00Z&aggregation=Count&interval=PT1H&$filter=GeoType eq 'Primary' and (ApiName eq 'Read' or ApiName eq 'Write')&api-version=2019-07-01",
+      "https://management.azure.com/subscriptions/52435666-b2cb-431f-8490-6f1524da777e/resourceGroups/chatbot/providers/Microsoft.Storage/storageAccounts/dhruvabot/providers/microsoft.insights/metrics?metricnames=Transactions&aggregation=Count&interval=PT1H&$filter=GeoType eq 'Primary' and ApiName eq '*'&api-version=2019-07-01"   ,
       'https://management.azure.com/subscriptions/52435666-b2cb-431f-8490-6f1524da777e/resourceGroups/chatbot/providers/Microsoft.ContainerRegistry/registries/dhruvacontainer/providers/microsoft.insights/metrics?api-version=2024-02-01&metricnames=StorageUsed',
       'https://management.azure.com/subscriptions/52435666-b2cb-431f-8490-6f1524da777e/resourceGroups/chatbot/providers/Microsoft.RecoveryServices/vaults/vault-ltirtryb/providers/microsoft.insights/metrics?api-version=2024-02-01&metricnames=BackupHealthEvent,RestoreHealthEvent',
       'https://management.azure.com/subscriptions/52435666-b2cb-431f-8490-6f1524da777e/resourceGroups/chatbot/providers/Microsoft.Web/serverFarms/ASP-chatbot-ba4b?api-version=2024-04-01'   ];
@@ -73,61 +73,115 @@ export class SubscriptionService {
     }
   }
 
-  getusagereportbyHour(hour: number) {
+  // getusagereportbyHour(hour: number) {
     
 
-    // Acquire token silently with the correct scope
-    const account = this.authService.account;
+  //   // Acquire token silently with the correct scope
+  //   const account = this.authService.account;
   
 
-    if (account) {
-      console.log("inside account", account)
-      return this.msal_service.acquireTokenSilent({
+  //   if (account) {
+  //     console.log("inside account", account)
+  //     return this.msal_service.acquireTokenSilent({
+  //       scopes: ['https://management.azure.com/.default'],
+  //       account
+  //     }).subscribe((response: any )=>{
+  //       console.log("accessstoken",response);
+  //       const token = response.accessToken;
+
+  //       const responses: (Object | null)[] = []
+
+  //       for (let i = 0; i < this.baseUrls.length; i++) {
+
+  //         const request =  this.http.get(this.baseUrls[i], {
+  //           headers: {
+  //             'Authorization': `Bearer ${token}`
+  //           }
+  //         }).pipe(
+  //           catchError(error => {
+  //             console.error('Error fetching usage details', error);
+  //             return of(null); // Return null or handle the error as needed
+  //           })
+  //         );
+
+  //         request.subscribe(data => {
+  //           responses.push(data);
+  //           console.log(`Response from ${this.baseUrls[i]}:`, data);
+  //           console.log(this.baseUrls.length,'All responses:', responses.length, );
+  //           if (responses.length === this.baseUrls.length) {
+  //             console.log('All responses:', responses);
+  //             this.usageDetailsSubject.next(responses); // Store all responses in the subject
+  //             // You can navigate or perform additional actions here if needed
+  //           }
+  //         })
+         
+
+
+  //       }
+
+
+  //     }
+    
+  //   )
+  //   } else {
+  //     this.authService.login();
+  //     return of(null); 
+  //   }
+// }
+
+getusagereportbyHour(usageStart: String, usageEnd: String): Observable<any[]> {
+  const account = this.authService.account;
+
+  if (account) {
+    return from(
+      this.msal_service.acquireTokenSilent({
         scopes: ['https://management.azure.com/.default'],
         account
-      }).subscribe((response: any )=>{
-        console.log("accessstoken",response);
+      })
+    ).pipe(
+      switchMap((response: any) => {
         const token = response.accessToken;
 
-        const responses: (Object | null)[] = []
+        const modifiedUrls = this.baseUrls.map(url => {
+          if (url.includes('metricnames')) {
+            // Append timespan only to URLs with metrics
+            return `${url}&timespan=${usageStart}/${usageEnd}`;
+            // return `${url}&timespan=2024-10-30T00:00:00Z/2024-10-31T00:00:00Z`
+          }
+          return url; // Leave other URLs unchanged
+        });
 
-        for (let i = 0; i < this.baseUrls.length; i++) {
-
-          const request =  this.http.get(this.baseUrls[i], {
+        const requests = modifiedUrls.map(url =>
+          this.http.get(url, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
           }).pipe(
             catchError(error => {
               console.error('Error fetching usage details', error);
-              return of(null); // Return null or handle the error as needed
+              return of(null); // Return null in case of error
             })
-          );
+          )
+        );
 
-          request.subscribe(data => {
-            responses.push(data);
-            console.log(`Response from ${this.baseUrls[i]}:`, data);
-            console.log(this.baseUrls.length,'All responses:', responses.length, );
-            if (responses.length === this.baseUrls.length) {
-              console.log('All responses:', responses);
-              this.usageDetailsSubject.next(responses); // Store all responses in the subject
-              // You can navigate or perform additional actions here if needed
-            }
-          })
-         
-
-
-        }
-
-
-      }
-    
-    )
-    } else {
-      this.authService.login();
-      return of(null); 
-    }
+        // Use forkJoin to aggregate results from all URLs
+        return forkJoin(requests);
+      }),
+      tap(responses => {
+        console.log('All responses:', responses);
+        this.usageDetailsSubject.next(responses); // Update the subject
+      }),
+      catchError(error => {
+        console.error('Error acquiring token or fetching usage report', error);
+        return of([]);
+      })
+    );
+  } else {
+    this.authService.login();
+    return of([]);
+  }
 }
+
 
 
 

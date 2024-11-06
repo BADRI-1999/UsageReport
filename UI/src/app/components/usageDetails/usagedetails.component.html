@@ -48,11 +48,11 @@
               <button (click) = "callApi()">Submit </button>
               </div>
 
-            <div *ngIf="!isDateRangeSelected">
+            <!-- <div *ngIf="!isDateRangeSelected">
             <button (click)="selectOption(1)">Last 1 Hour</button>
             <button (click)="selectOption(2)">Last 2 Hours</button>
             <button (click)="selectOption(3)">Last 3 Hours</button>
-            </div>
+            </div> -->
 
             
           
@@ -63,6 +63,32 @@
 
         
     </div>
+
+
+    <div *ngIf="showHour">
+      <div *ngIf="summaryData.length > 0" class="summary-table">
+ 
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Service Name</th>
+              <th>Publisher</th>
+              <th>Total Cost (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of summaryData">
+              <td>{{ data.serviceName }}</td>
+              <td>{{ data.publisher }}</td>
+              <td>{{ data.totalCost | number: '1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  </div>
+
+      
+   
 
     <div class="share">
 
