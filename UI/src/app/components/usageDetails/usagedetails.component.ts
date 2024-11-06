@@ -68,6 +68,7 @@ export class UsageDetailsComponent implements OnInit {
     this.display = true;
     this.showHour = false;
 
+
   if (!this.usageDetails || !this.usageDetails.value) {
     console.error('Usage details are not available for rendering.');
     return; // Exit if usage details are not available
@@ -158,9 +159,12 @@ export class UsageDetailsComponent implements OnInit {
 
   async callApi() {
     this.isLoading = true;
+
     this.closeModal();
 
     if(this.isDateRangeSelected){
+      this.display = true;
+    this.showHour = false;
       console.log("inside date range", this.isDateRangeSelected)
       this.startDate = this.range.value.start;
       this.endDate = this.range.value.end;
@@ -194,6 +198,9 @@ export class UsageDetailsComponent implements OnInit {
       this.renderTemplate();
       }
       else if(this.selectedHours){
+        this.display = false;
+    this.showHour = true;
+        this.showModal = false
         this.subscriptionService.getusagereportbyHour(this.startDate.toISOString(),this.endDate.toISOString()).subscribe({
           next: (usageDetails: any[]) => {
             this.usageDetails = usageDetails; // Store data in a component property
@@ -201,6 +208,8 @@ export class UsageDetailsComponent implements OnInit {
             this.summaryData = []
             this.perHourRender(this.usageDetails)
             this.showHour = true
+            
+            
            
           },
           error: (error) => {
@@ -373,7 +382,7 @@ calculateContainerRegistry(item: any) {
   const additionalCost = additionalGB * additionalCostPerGBPerDay;
 
   // Total cost calculation
-  const totalCost = baseCostPerDay + additionalCost;
+  const totalCost = (baseCostPerDay + additionalCost);
 
   // Display the result
   console.log(`Total Storage Used: ${totalGB.toFixed(2)} GB`);
@@ -384,7 +393,8 @@ calculateContainerRegistry(item: any) {
   this.summaryData.push({
     serviceName: item.namespace,
     publisher: "Azure Container Registry",
-    totalCost: parseFloat(totalCost.toFixed(2))
+    totalCost: parseFloat((totalCost / 24).toFixed(2))
+
 });
 }
 

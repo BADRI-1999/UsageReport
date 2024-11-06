@@ -16,7 +16,7 @@
     </div>
 
     <!-- Div where Handlebars will insert the generated content -->
-    <div id="display">
+    <div id="display" *ngIf="display">
     </div>
 
 
@@ -48,11 +48,11 @@
               <button (click) = "callApi()">Submit </button>
               </div>
 
-            <!-- <div *ngIf="!isDateRangeSelected">
+            <div *ngIf="!isDateRangeSelected">
             <button (click)="selectOption(1)">Last 1 Hour</button>
             <button (click)="selectOption(2)">Last 2 Hours</button>
             <button (click)="selectOption(3)">Last 3 Hours</button>
-            </div> -->
+            </div>
 
             
           
